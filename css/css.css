@@ -1,0 +1,49 @@
+﻿body{font-size:1rem;width:outo;}
+	/*按钮处*/
+	.div-button{
+		margin-top:1.3rem;
+		width:100%;
+		text-align:center;
+	}
+	.div-buttonClass{
+		width:62.3%;
+		background:url(../img/background.gif) repeat-x 0; 
+		height:3rem; 
+		border:0;
+	}
+	.div-buttonSpan{
+		font-size:1.5rem; 
+		color:#FFFFFF
+	}
+
+	.div-button2{
+		margin-top:2rem;
+		width:100%;
+		text-align:center;
+	}
+	.div-buttonClass2{
+		width:40%;
+		background: #19b5ff;
+		height:3rem; 
+		border:0;
+	}
+	.div-buttonSpan2{
+		font-size:1.5rem; 
+		color:#FFFFFF
+	}
+	
+	/*隐藏遮罩层*/
+	.div-maskDis{
+		display:none;
+	}
+	
+	/*显示遮罩层*/
+	.div-mask{
+		position:absolute;
+		top:0;
+		bottom:0;
+		left:0;
+		right:0;
+		background:#000;
+		opacity:0.7;
+	}

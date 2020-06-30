@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" />
+<html>
+<head>
+<title>人脸识别</title>
+</head>
+<link href="./css/main.css" rel="stylesheet">
+<link href="./css/css.css" rel="stylesheet">
+
+<script type="text/javascript" src="./js/jquery.min.js"></script><!--jq-->
+<script type="text/javascript" src="./bootstrap-3.3.7-dist/js/jquery.cookie.js"></script>
+<script type="text/javascript" src="./bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://appx/web-view.min.js"></script>
+<script src="./js/vconsole.min.js"></script>
+<script>
+	// 初始化
+	var vConsole = new VConsole();
+	if (navigator.userAgent.toLowerCase().indexOf('dingtalk') > -1) {
+		document.writeln('<script src="https://appx/web-view.min.js"' + '>' + '<' + '/' + 'script>');
+	}
+
+	// 接收来自小程序的消息。
+	dd.onMessage = function (e) {
+		console.log(e); //{'sendToWebView': '1'}
+		alert(JSON.stringify(e))
+	}
+
+</script>
+<style>
+/*新增的提示框*/
+.alert {
+	padding:15px;
+	margin-bottom:20px;
+	border:1px solid transparent;
+	border-radius:4px
+}
+.alert-danger {
+	color:#a94442;
+	background-color:#f2dede;
+	border-color:#ebccd1
+}
+.alert-dismissable {
+	padding-right:35px;
+	position:relative;
+	top:-2px;
+	right:-21px;
+	color:inherit
+}
+.close {
+	float:right;
+	font-size:21px;
+	font-weight:700;
+	line-height:1;
+	color:#000;
+	text-shadow:0 1px 0 #fff;
+	filter:alpha(opacity=20);
+	opacity:.2
+}
+button.close {
+	-webkit-appearance:none;
+	padding:0;
+	cursor:pointer;
+	background:0 0;
+	border:0
+}
+</style>
+<body>
+<!--bootstrap提示框-->
+<div class="LivAlert">
+</div>
+<!--活体界面-->
+<div  class="Living">
+	<div class="sketch"><div class="sketch-img"></div> <p class="sketch-text">正面平视手机、保证光线充足<br>请勿遮挡面部</p></div> 
+	<div class="prompt" ><div class="prompt-box"><div class="prompt-box-text">
+		<span class="prompt-box-text-number">1</span>
+		<span class="prompt-box-text-content">牢记验证码，点击开始录制</span> 
+		<span class="prompt-box-text-border"></span></div><div class="prompt-box-text">
+		<span class="prompt-box-text-number">2</span>
+		<span class="prompt-box-text-content">开启前置摄像头，普通话朗读数字</span> 
+		<span class="prompt-box-text-border"></span></div><div class="prompt-box-text">
+		<span class="prompt-box-text-number">3</span>
+		<span class="prompt-box-text-content">完成录制，等待验证结果</span> <!----></div></div> 
+		<span class="prompt-next nextVideo">人脸认证</span>
+	</div>
+	
+	<div class="modal-layer" style="display:none;"><div class="modal-layer-mask"></div> 
+		<div class="modal-layer-popup"><div class="modal-layer-success"><div class="modal-layer-popup-title">请牢记以下验证码</div> 
+		<div class="modal-layer-popup-content">此验证码将于<span>48</span>秒后过期<br>用普通话朗读数字，视频时长<span>3-6</span>秒最佳</div> 
+		<div class="modal-layer-popup-number"><span>4</span><span>6</span><span>9</span></div> 
+		<div class="modal-wrapper modal-point"><span class="modal-confirm-btn">
+                    记住了，开始录制
+                </span> 
+				<input type="file" accept="video/*" capture="user" class="camera-input video" id="video"></div></div>
+				<span class="modal-layer-close"></span></div>
+	</div>
+	
+	<div class="loading" style="display:none;"><div class="loading-icon">验证中...</div></div>
+	<!----></div>
+	<div class="div-button"  style="display:none;">
+		<button class="div-buttonClass" id="sub"><span class="div-buttonSpan">点 我</span></button>
+	</div>
+</body>
+
+<script>
+	$("#sub").click(function(){
+		$(".Living").show();
+		$("#sub").hide();
+	})
+	/**
+	*读秒60
+	*/
+	function settime(seconds){
+		if(seconds > 1){
+			seconds--;
+			$(".modal-layer-popup-content").html("此验证码将于<span>"+seconds+"</span>秒后过期<br>用普通话朗读数字，视频时长<span>3-6</span>秒最佳");
+			tmid = setTimeout(function(){
+				settime(seconds)
+			},1000)
+		}else{
+			$(".modal-layer-popup-number").html("<span>"+Math.floor(Math.random()*10)+"</span><span>"+Math.floor(Math.random()*10)+"</span><span>"+Math.floor(Math.random()*10)+"</span><span>"+Math.floor(Math.random()*10)+"</span>");
+			settime(60);
+		}
+	}
+	/**
+	*活体下一步
+	*/	
+	$(".nextVideo").click(function(){
+		$(".modal-layer").show();
+		$(".modal-layer-popup-number").html("<span>"+Math.floor(Math.random()*10)+"</span><span>"+Math.floor(Math.random()*10)+"</span><span>"+Math.floor(Math.random()*10)+"</span><span>"+Math.floor(Math.random()*10)+"</span>");
+		settime(60);
+	})
+	$(".modal-layer-close").click(function(){
+		$(".modal-layer").hide();
+		window.clearTimeout(tmid);
+	});
+	/**
+	*清除
+	*/
+	function obmit(){
+		$(".loading").hide();
+		$(".modal-layer").hide();
+		window.clearTimeout(tmid);
+		
+
+		// javascript
+
+		// 网页向小程序 postMessage 消息
+		dd.postMessage({ name: "人脸识别成功",cardId:'410926199609043562' });
+		// dd.navigateTo({ url: '/pages/index/index' });
+
+	}
+	/**
+	*活体视频上传
+	*/
+	$("#video").change(function(){
+		var file = $("#video").get(0).files[0];
+		var fileSize =(this.files[0].size) / (1024*1024);//转换成M
+		fileSize = fileSize.toFixed(0);//保留小数点后一位
+		if(fileSize > 12){
+			$(".LivAlert").html("<div class='alert alert-danger alert-dismissable'><button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>视频时间，建议在3-6秒</div>");
+			$(".modal-layer").hide();
+			window.clearTimeout(tmid);
+			return;
+		}else{
+			$(".loading").show();
+			var u = navigator.userAgent, app = navigator.appVersion;
+			var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Linux') > -1; //g
+			var isIOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端			
+			var parameter={};
+			parameter["name"]=$.trim($("#name").val());
+			parameter["cordId"]=$.trim($("#cardId").val());
+			if(isAndroid){
+				parameter["phoneType"]="0"
+			}
+			if(isIOS){
+				parameter["phoneType"]="1"
+			}
+			var formData = new FormData();
+			formData.append("jsonstring", parameter);
+			formData.append("btnFile", file);
+				$.ajax({
+					timeout: 300000,
+					type: "POST",
+					url: "http://xxx/",
+					data: formData,
+					dataType:'json',//返回的数据格式
+					cache: false,
+					processData: false,
+					contentType: false,
+					xhr: function() {
+						myXhr = $.ajaxSettings.xhr();
+						return myXhr
+					},
+					success: function(data) {
+						//alert(JSON.stringify(data));
+						obmit();
+						if(data["code"] == 10000){
+							var result = data["data"];
+							if(result["code"] == 'Y'){
+								//这里根据后端返回的结果 做下一步操作
+								//...
+								
+							}else{
+								$(".LivAlert").html("<div class='alert alert-danger alert-dismissable'><button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>"+data["msg"]+"</div>");
+							}
+						}else{
+							var res = data["data"];
+							if(typeof data["msg"] == "undefined"){
+								$(".LivAlert").html("<div class='alert alert-danger alert-dismissable'><button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>对不起，您的手机不支持。</div>");
+							}else{
+								$(".LivAlert").html("<div class='alert alert-danger alert-dismissable'><button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>"+data["msg"]+"</div>");		
+							}
+						}
+					},
+					error: function(jqXHR, textStatus, errorThrown) {
+					   //错误情况
+						obmit();
+						$(".LivAlert").html("<div class='alert alert-danger alert-dismissable'><button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>服务器异常:"+jqXHR.status+":"+jqXHR.statusText+"</div>");
+					},
+					complete: function(XMLHttpRequest,status){ //请求完成后最终执行参数
+						obmit();
+				　　　　if(status=='timeout'){//超时,status还有success,error等值的情况
+				 　　　　　 $(".LivAlert").html("<div class='alert alert-danger alert-dismissable'><button type='button' class='close' data-dismiss='alert' aria-hidden='true'>&times;</button>请求超时,请移动到网络良好的环境</div>");
+				　　　　}
+				　　}
+				})
+		}
+	})
+</script>
+</html>
